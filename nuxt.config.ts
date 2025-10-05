@@ -7,6 +7,14 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/image',
     '@nuxt/scripts',
-    '@nuxt/ui'
-  ]
+    '@nuxt/ui',
+    '@nuxtjs/apollo'
+  ],
+  apollo: {
+    clients: {
+      default: {
+        httpEndpoint: 'https://nuxt.getmakedigital.com/backend/public/api/graphql'
+      }
+    },
+  },
 })
