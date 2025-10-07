@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-
+  css: ['~/assets/css/main.css'],
   modules: [
     '@nuxt/eslint',
     '@nuxt/image',
@@ -10,6 +10,11 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxtjs/apollo'
   ],
+  ui: {
+    theme: {
+      colors: ['primary', 'error'],
+    }
+  },
   apollo: {
     clients: {
       default: {
