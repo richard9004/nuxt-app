@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import AddRoomModal from '~/components/AddRoomModal.vue'
+
 
 interface Room {
   name: string
@@ -9,14 +11,15 @@ interface Room {
   description?: string // optional room description
 }
 
-const rooms: Room[] = [
-  { name: 'Living Room', icon: 'i-lucide-lightbulb', color: 'text-yellow-500', description: 'Main living area' },
-  { name: 'Bedroom', icon: 'i-lucide-bed', color: 'text-blue-500', description: 'Place to sleep and relax' },
-  { name: 'Kitchen', icon: 'i-lucide-cpu', color: 'text-red-500', description: 'Cooking and dining area' },
-  { name: 'Office', icon: 'i-lucide-monitor', color: 'text-green-500', description: 'Workspace' },
-  { name: 'Add Room', icon: 'i-lucide-plus-circle', color: 'text-gray-400', isAdd: true },
-]
+const roomColors = ['text-amber-400', 'text-sky-400', 'text-rose-400', 'text-lime-400', 'text-violet-400'];
 
+const rooms: Room[] = [
+  { name: 'Room 101', icon: 'i-lucide-house', color: roomColors[0], description: 'Guest room 101' },
+  { name: 'Room 102', icon: 'i-lucide-house-plus', color: roomColors[1], description: 'Guest room 102' },
+  { name: 'Room 103', icon: 'i-lucide-house-plus', color: roomColors[2], description: 'Guest room 103' },
+  { name: 'Room 104', icon: 'i-lucide-house-plus', color: roomColors[3], description: 'Guest room 104' },
+  { name: 'Add Room', icon: 'i-lucide-house-plus', color: 'text-gray-400', isAdd: true },
+];
 const selectedRoom = ref<Room | null>(null)
 
 const selectRoom = (room: Room) => {
@@ -27,6 +30,15 @@ const selectRoom = (room: Room) => {
     alert('Add Room clicked!')
   }
 }
+
+const isModalOpen = ref(true)
+
+const openModal = () => {
+  alert('JERE');
+  isModalOpen.value = true
+}
+
+const showModal = ref(false)
 </script>
 
 <template>
@@ -49,7 +61,7 @@ const selectRoom = (room: Room) => {
             :key="index"
             class="flex flex-col items-center p-4 w-32 hover:shadow-lg transition cursor-pointer"
             :class="room.isAdd ? 'border-2 border-dashed border-gray-300' : ''"
-            @click="selectRoom(room)"
+            @click="openModal"
           >
             <UIcon :name="room.icon" class="size-8" :class="room.color" />
             <p class="mt-2 text-center font-medium" :class="room.isAdd ? 'text-gray-500' : ''">
@@ -73,5 +85,10 @@ const selectRoom = (room: Room) => {
         </template>
       </div>
     </div>
+
+    <AddRoomModal
+       v-model:open="isModalOpen" 
+    />
   </UContainer>
+
 </template>
