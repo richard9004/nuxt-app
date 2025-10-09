@@ -17,8 +17,7 @@ const rooms: Room[] = [
   { name: 'Room 101', icon: 'i-lucide-house', color: roomColors[0], description: 'Guest room 101' },
   { name: 'Room 102', icon: 'i-lucide-house-plus', color: roomColors[1], description: 'Guest room 102' },
   { name: 'Room 103', icon: 'i-lucide-house-plus', color: roomColors[2], description: 'Guest room 103' },
-  { name: 'Room 104', icon: 'i-lucide-house-plus', color: roomColors[3], description: 'Guest room 104' },
-  { name: 'Add Room', icon: 'i-lucide-house-plus', color: 'text-gray-400', isAdd: true },
+  { name: 'Room 104', icon: 'i-lucide-house-plus', color: roomColors[3], description: 'Guest room 104' }
 ];
 const selectedRoom = ref<Room | null>(null)
 
@@ -33,8 +32,7 @@ const selectRoom = (room: Room) => {
 
 const isModalOpen = ref(true)
 
-const openModal = () => {
-  alert('JERE');
+const openAddRoomModal = () => {
   isModalOpen.value = true
 }
 
@@ -68,6 +66,15 @@ const showModal = ref(false)
               {{ room.name }}
             </p>
           </UCard>
+
+              <!-- Add Room card -->
+            <UCard
+              class="flex flex-col items-center p-4 w-32 border-2 border-dashed border-gray-300 cursor-pointer hover:shadow-lg transition"
+              @click="openAddRoomModal"
+            >
+              <UIcon name="i-lucide-plus" class="size-8 text-gray-400" />
+              <p class="mt-2 text-center font-medium text-gray-500">Add Room</p>
+            </UCard>
         </div>
       </div>
 
