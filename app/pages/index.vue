@@ -14,10 +14,10 @@ interface Room {
 const roomColors = ['text-amber-400', 'text-sky-400', 'text-rose-400', 'text-lime-400', 'text-violet-400'];
 
 const rooms: Room[] = [
-  { name: 'Room 101', icon: 'i-lucide-house', color: roomColors[0], description: 'Guest room 101' },
-  { name: 'Room 102', icon: 'i-lucide-house-plus', color: roomColors[1], description: 'Guest room 102' },
-  { name: 'Room 103', icon: 'i-lucide-house-plus', color: roomColors[2], description: 'Guest room 103' },
-  { name: 'Room 104', icon: 'i-lucide-house-plus', color: roomColors[3], description: 'Guest room 104' }
+  { name: 'Room 101', icon: 'i-lucide-house-plus', color: roomColors[0], type: '' },
+  { name: 'Room 102', icon: 'i-lucide-house-plus', color: roomColors[1], type: '' },
+  { name: 'Room 103', icon: 'i-lucide-house-plus', color: roomColors[2], type: '' },
+  { name: 'Room 104', icon: 'i-lucide-house-plus', color: roomColors[3], type: '' }
 ];
 const selectedRoom = ref<Room | null>(null)
 
@@ -30,10 +30,20 @@ const selectRoom = (room: Room) => {
   }
 }
 
-const isModalOpen = ref(true)
+const isModalOpen = ref(false)
+const editRoomData = ref<Room | null>(null);
 
 const openAddRoomModal = () => {
+  editRoomData.value = null 
   isModalOpen.value = true
+}
+
+
+
+const editRoom = (room: Room) => {
+   console.log(room);
+   editRoomData.value = { ...room }
+   isModalOpen.value = true
 }
 
 const showModal = ref(false)
@@ -48,24 +58,55 @@ const showModal = ref(false)
         Add your rooms below and see details instantly. Select a room to view or edit its details.
       </p>
     </div>
-
+  
     <!-- Two-column layout -->
     <div class="flex flex-col md:flex-row gap-6">
       <!-- Rooms Grid -->
+
       <div class="flex-1">
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
-          <UCard
-            v-for="(room, index) in rooms"
-            :key="index"
-            class="flex flex-col items-center p-4 w-32 hover:shadow-lg transition cursor-pointer"
-            :class="room.isAdd ? 'border-2 border-dashed border-gray-300' : ''"
-            @click="openModal"
-          >
+
+        <UCard
+          v-for="(room, index) in rooms"
+          :key="index"
+          class="relative flex flex-col items-center p-4 w-32 hover:shadow-lg transition group"
+        >
+            <!-- Edit Button (top-left) -->
+            <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+               <UTooltip text="edit room or apartment">
+              <UButton
+                icon="i-lucide-edit-2"
+                size="sm"
+                active color="neutral" variant="outline" active-color="primary" active-variant="solid"
+                @click.stop="editRoom(room)"
+               
+              />
+            </UTooltip>
+
+
+            </div>
+
+            <!-- Delete Button (top-right) -->
+            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <UTooltip text="Delete room or apartment">
+              <UButton
+                icon="i-lucide-trash"
+                size="sm"
+                active color="neutral" variant="outline" active-color="error" active-variant="solid"
+                @click.stop="deleteRoom(index)"
+                
+              />
+            </UTooltip>
+            </div>
+
+          
+          <div class="flex justify-center items-center w-full my-4">
             <UIcon :name="room.icon" class="size-8" :class="room.color" />
-            <p class="mt-2 text-center font-medium" :class="room.isAdd ? 'text-gray-500' : ''">
-              {{ room.name }}
-            </p>
+          </div>
+            <!-- Room Name -->
+            <p class="mt-2 text-center font-medium">{{ room.name }}</p>
           </UCard>
+
 
               <!-- Add Room card -->
             <UCard
@@ -95,6 +136,9 @@ const showModal = ref(false)
 
     <AddRoomModal
        v-model:open="isModalOpen" 
+       @add-room="newRoom => rooms.push(newRoom)"
+       :room-colors="roomColors"
+       :editRoomData="editRoomData"
     />
   </UContainer>
 
