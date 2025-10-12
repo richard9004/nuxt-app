@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import AddRoomModal from '~/components/AddRoomModal.vue'
+import RoomModal from '~/components/RoomModal.vue'
+import Swal from 'sweetalert2'
 
 
 interface Room {
@@ -13,21 +14,20 @@ interface Room {
 
 const roomColors = ['text-amber-400', 'text-sky-400', 'text-rose-400', 'text-lime-400', 'text-violet-400'];
 
-const rooms: Room[] = [
+const rooms = ref<Room[]>([
   { name: 'Room 101', icon: 'i-lucide-house-plus', color: roomColors[0], type: '' },
   { name: 'Room 102', icon: 'i-lucide-house-plus', color: roomColors[1], type: '' },
   { name: 'Room 103', icon: 'i-lucide-house-plus', color: roomColors[2], type: '' },
   { name: 'Room 104', icon: 'i-lucide-house-plus', color: roomColors[3], type: '' }
-];
+]);
+
+
 const selectedRoom = ref<Room | null>(null)
 
 const selectRoom = (room: Room) => {
   if (!room.isAdd) {
     selectedRoom.value = room
-  } else {
-    // handle Add Room click
-    alert('Add Room clicked!')
-  }
+  } 
 }
 
 const isModalOpen = ref(false)
@@ -38,6 +38,13 @@ const openAddRoomModal = () => {
   isModalOpen.value = true
 }
 
+const updateRoom = (updatedRoom: Room) => {
+  const index = rooms.value.findIndex(r => r.name === editRoomData.value?.name)
+  if (index !== -1) {
+    rooms.value[index] = updatedRoom
+  }
+}
+
 
 
 const editRoom = (room: Room) => {
@@ -45,6 +52,34 @@ const editRoom = (room: Room) => {
    editRoomData.value = { ...room }
    isModalOpen.value = true
 }
+
+const deleteRoom = (index) => {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "This action cannot be undone!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+       rooms.value.splice(index, 1)
+
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Room deleted successfully',
+        showConfirmButton: false,
+        timer: 2000
+      });
+    }
+  });
+};
+
+
 
 const showModal = ref(false)
 </script>
@@ -134,9 +169,10 @@ const showModal = ref(false)
       </div>
     </div>
 
-    <AddRoomModal
+    <RoomModal
        v-model:open="isModalOpen" 
        @add-room="newRoom => rooms.push(newRoom)"
+       @update-room="updateRoom"
        :room-colors="roomColors"
        :editRoomData="editRoomData"
     />

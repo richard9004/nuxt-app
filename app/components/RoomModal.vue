@@ -2,6 +2,8 @@
 import { defineProps, defineEmits, watch  } from 'vue'
 import * as v from 'valibot'
 import type { FormSubmitEvent } from '@nuxt/ui'
+import Swal from 'sweetalert2'
+
 
 const schema = v.object({
   name: v.pipe(
@@ -21,20 +23,8 @@ const state = reactive({
 })
 
 
-const emit = defineEmits(['update:open', 'add-room'])
+const emit = defineEmits(['update:open', 'add-room', 'update-room'])
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  const color = props.roomColors[Math.floor(Math.random() * props.roomColors.length)]
-  const newRoom = {
-    name: state.name,
-    icon: 'i-lucide-house-plus', // generic icon
-    color: color,
-    type: state.type
-  }
-
-  emit('add-room', newRoom)
-  emit('update:open', false) // close the modal
-}
 
 
 const props = defineProps({
@@ -86,6 +76,39 @@ const modalDescription = computed(() =>
 const submitLabel = computed(() =>
   props.editRoomData ? 'Update' : 'Create'
 )
+
+const toasterLabel = computed(() =>
+  props.editRoomData ? 'updated' : 'created'
+)
+
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  const color = props.roomColors[Math.floor(Math.random() * props.roomColors.length)]
+  const roomData = {
+    name: state.name,
+    icon: 'i-lucide-house-plus', // generic icon
+    color: color,
+    type: state.type
+  }
+
+  if (props.editRoomData) {
+    // 🔁 Editing mode
+    emit('update-room', roomData)
+  } else {
+    // ➕ Adding mode
+    emit('add-room', roomData)
+  }
+  emit('update:open', false) // close the modal
+
+  Swal.fire({
+    toast: true,
+    position: 'bottom-end',
+    icon: 'success',
+    title: `Accommodation ${toasterLabel.value} successfully`,
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true
+  });
+}
 </script>
 
 <template>
