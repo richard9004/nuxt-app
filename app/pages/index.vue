@@ -12,6 +12,8 @@ interface Room {
   description?: string // optional room description
 }
 
+const selectedRooms = ref([]) 
+
 const roomColors = ['text-amber-400', 'text-sky-400', 'text-rose-400', 'text-lime-400', 'text-violet-400'];
 
 const rooms = ref<Room[]>([
@@ -23,12 +25,6 @@ const rooms = ref<Room[]>([
 
 
 const selectedRoom = ref<Room | null>(null)
-
-const selectRoom = (room: Room) => {
-  if (!room.isAdd) {
-    selectedRoom.value = room
-  } 
-}
 
 const isModalOpen = ref(false)
 const editRoomData = ref<Room | null>(null);
@@ -79,6 +75,22 @@ const deleteRoom = (index) => {
   });
 };
 
+const selectRoom = (room: Room) => {
+  if (!room.isAdd) {
+    const index = selectedRooms.value.findIndex(r => r.name === room.name)
+    if (index === -1) {
+      // Add room if not already selected
+      selectedRooms.value.push(room)
+    } else {
+      // Remove room if already selected (toggle)
+      selectedRooms.value.splice(index, 1)
+    }
+
+    console.log('SELECED ROOMS');
+    console.log(selectedRooms.value)
+  }
+}
+
 
 
 const showModal = ref(false)
@@ -104,7 +116,9 @@ const showModal = ref(false)
         <UCard
           v-for="(room, index) in rooms"
           :key="index"
-          class="relative flex flex-col items-center p-4 w-32 hover:shadow-lg transition group"
+          class="relative flex flex-col items-center p-4 w-32 hover:shadow-lg transition group cursor-pointer"
+          @click="selectRoom(room)"
+          :class="{ 'ring-2 ring-primary': selectedRooms.some(r => r.name === room.name) }"
         >
             <!-- Edit Button (top-left) -->
             <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -156,17 +170,26 @@ const showModal = ref(false)
 
       <!-- Details Panel -->
       <div class="flex-1 p-4 rounded-md min-h-[200px]">
-        <template v-if="selectedRoom">
-          <h4 class="text-lg font-semibold mb-2">{{ selectedRoom.name }} Details</h4>
-          <p class="text-gray-700">{{ selectedRoom.description || 'No additional details available.' }}</p>
-          <!-- Additional fields like bills, occupancy etc. can go here -->
+        <template v-if="selectedRooms.length">
+            <UPageList>
+              
+              <RoomDetails
+                v-for="room in selectedRooms"
+                :key="room.name"
+                :room="room"
+                @update:type="val => console.log('Type selected for', room.name, val)"
+                @update:gstValue="val => console.log('GST value for', room.name, val)"
+              />
+           </UPageList>
         </template>
+
         <template v-else>
           <p class="text-gray-500 text-center mt-4">
             Select a room to view details
           </p>
         </template>
       </div>
+
     </div>
 
     <RoomModal
