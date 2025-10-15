@@ -91,96 +91,130 @@ const selectRoom = (room: Room) => {
   }
 }
 
+const confirmRemoveRoom = (room) => {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: `Do you want to remove ${room.name}? This action cannot be undone.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Yes, remove it!',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Remove the room from selectedRooms
+      selectedRooms.value = selectedRooms.value.filter(r => r.name !== room.name)
+
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Room removed successfully',
+        showConfirmButton: false,
+        timer: 2000
+      })
+    }
+  })
+}
+
 
 
 const showModal = ref(false)
 </script>
 
-<template>
+    <template>
   <UContainer as="section" class="py-8">
-    <!-- Header -->
-    <div class="mb-8 text-center md:text-left">
-      <h3 class="text-xl font-semibold mb-1">Set Up Your Rooms</h3>
-      <p class="text-gray-600 text-sm max-w-2xl">
-        Add your rooms below and see details instantly. Select a room to view or edit its details.
-      </p>
-    </div>
-  
-    <!-- Two-column layout -->
+
     <div class="flex flex-col md:flex-row gap-6">
-      <!-- Rooms Grid -->
-
       <div class="flex-1">
+        <!-- Header for Room Grid -->
+        <div class="mb-6 text-center md:text-left">
+          <h3 class="text-xl font-semibold mb-1">Room Grid</h3>
+          <p class="text-gray-600 text-sm max-w-2xl">
+            Add, edit, or remove your rooms below.
+          </p>
+        </div>
+
+        <!-- Room Cards -->
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
-
-        <UCard
-          v-for="(room, index) in rooms"
-          :key="index"
-          class="relative flex flex-col items-center p-4 w-32 hover:shadow-lg transition group cursor-pointer"
-          @click="selectRoom(room)"
-          :class="{ 'ring-2 ring-primary': selectedRooms.some(r => r.name === room.name) }"
-        >
-            <!-- Edit Button (top-left) -->
+          <UCard
+            v-for="(room, index) in rooms"
+            :key="index"
+            class="relative flex flex-col items-center p-4 w-32 hover:shadow-lg transition group cursor-pointer"
+            @click="selectRoom(room)"
+            :class="{ 'ring-2 ring-primary': selectedRooms.some(r => r.name === room.name) }"
+          >
+            <!-- Edit Button -->
             <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
-               <UTooltip text="edit room or apartment">
-              <UButton
-                icon="i-lucide-edit-2"
-                size="sm"
-                active color="neutral" variant="outline" active-color="primary" active-variant="solid"
-                @click.stop="editRoom(room)"
-               
-              />
-            </UTooltip>
-
-
+              <UTooltip text="Edit room or apartment">
+                <UButton
+                  active
+                  icon="i-lucide-edit-2"
+                  size="sm"
+                  color="neutral"
+                  variant="outline"
+                  active-color="primary"
+                  active-variant="outline"
+                  @click.stop="editRoom(room)"
+                />
+              </UTooltip>
             </div>
 
-            <!-- Delete Button (top-right) -->
+            <!-- Delete Button -->
             <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <UTooltip text="Delete room or apartment">
-              <UButton
-                icon="i-lucide-trash"
-                size="sm"
-                active color="neutral" variant="outline" active-color="error" active-variant="solid"
-                @click.stop="deleteRoom(index)"
-                
-              />
-            </UTooltip>
+              <UTooltip text="Delete room or apartment">
+                <UButton
+                  active
+                  icon="i-lucide-trash"
+                  size="sm"
+                  color="neutral"
+                  variant="outline"
+                  active-color="error"
+                  active-variant="outline"
+                  @click.stop="deleteRoom(index)"
+                />
+              </UTooltip>
             </div>
 
-          
-          <div class="flex justify-center items-center w-full my-4">
-            <UIcon :name="room.icon" class="size-8" :class="room.color" />
-          </div>
-            <!-- Room Name -->
+            <div class="flex justify-center items-center w-full my-4">
+              <UIcon :name="room.icon" class="size-8" :class="room.color" />
+            </div>
             <p class="mt-2 text-center font-medium">{{ room.name }}</p>
           </UCard>
 
-
-              <!-- Add Room card -->
-            <UCard
-              class="flex flex-col items-center p-4 w-32 border-2 border-dashed border-gray-300 cursor-pointer hover:shadow-lg transition"
-              @click="openAddRoomModal"
-            >
-              <UIcon name="i-lucide-plus" class="size-8 text-gray-400" />
-              <p class="mt-2 text-center font-medium text-gray-500">Add Room</p>
-            </UCard>
+          <!-- Add Room Card -->
+          <UCard
+            class="flex flex-col items-center p-4 w-32 border-2 border-dashed border-gray-300 cursor-pointer hover:shadow-lg transition"
+            @click="openAddRoomModal"
+          >
+            <UIcon name="i-lucide-plus" class="size-8 text-gray-400" />
+            <p class="mt-2 text-center font-medium text-gray-500">Add Room</p>
+          </UCard>
         </div>
       </div>
 
-      <!-- Details Panel -->
-      <div class="flex-1 p-4 rounded-md min-h-[200px]">
+      
+      <div class="flex-1">
+        <!-- Header for Details Panel -->
+        <div class="mb-6 text-center md:text-left">
+          <h3 class="text-xl font-semibold mb-1">Room Details</h3>
+          <p class="text-gray-600 text-sm max-w-2xl">
+            Select a room from the grid to view or modify its details.
+          </p>
+        </div>
+
         <template v-if="selectedRooms.length">
-            <UPageList>
-              
-              <RoomDetails
-                v-for="room in selectedRooms"
-                :key="room.name"
-                :room="room"
-                @update:type="val => console.log('Type selected for', room.name, val)"
-                @update:gstValue="val => console.log('GST value for', room.name, val)"
-              />
-           </UPageList>
+          <UPageList class="space-y-4">
+            <RoomDetails
+              v-for="room in selectedRooms"
+              :key="room.name"
+              :room="room"
+              @update:type="val => console.log('Type selected for', room.name, val)"
+              @update:gstValue="val => console.log('GST value for', room.name, val)"
+              @remove-room="confirmRemoveRoom"
+            />
+          </UPageList>
         </template>
 
         <template v-else>
@@ -192,13 +226,14 @@ const showModal = ref(false)
 
     </div>
 
+    <!-- Modal -->
     <RoomModal
-       v-model:open="isModalOpen" 
-       @add-room="newRoom => rooms.push(newRoom)"
-       @update-room="updateRoom"
-       :room-colors="roomColors"
-       :editRoomData="editRoomData"
+      v-model:open="isModalOpen"
+      @add-room="newRoom => rooms.push(newRoom)"
+      @update-room="updateRoom"
+      :room-colors="roomColors"
+      :editRoomData="editRoomData"
+     
     />
   </UContainer>
-
 </template>
