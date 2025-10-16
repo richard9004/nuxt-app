@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import RoomModal from '~/components/RoomModal.vue'
 import Swal from 'sweetalert2'
+import draggable from 'vuedraggable'
+
 
 
 interface Room {
@@ -10,6 +12,18 @@ interface Room {
   color?: string
   isAdd?: boolean
   description?: string // optional room description
+}
+
+// Reactive list
+const list = ref<Person[]>([
+  { id: 1, name: 'John' },
+  { id: 2, name: 'Jane' },
+  { id: 3, name: 'Bob' }
+])
+
+// Handle changes
+const onListChange = (event: any) => {
+  console.log('List changed:', event)
 }
 
 const selectedRooms = ref([]) 
@@ -89,6 +103,10 @@ const selectRoom = (room: Room) => {
     console.log('SELECED ROOMS');
     console.log(selectedRooms.value)
   }
+}
+
+const handleChange = () => {
+  console.log('CHANHED');
 }
 
 const confirmRemoveRoom = (room) => {
@@ -205,16 +223,22 @@ const showModal = ref(false)
         </div>
 
         <template v-if="selectedRooms.length">
-          <UPageList class="space-y-4">
-            <RoomDetails
-              v-for="room in selectedRooms"
-              :key="room.name"
-              :room="room"
-              @update:type="val => console.log('Type selected for', room.name, val)"
-              @update:gstValue="val => console.log('GST value for', room.name, val)"
-              @remove-room="confirmRemoveRoom"
-            />
-          </UPageList>
+           <UPageList class="space-y-4">
+          <draggable v-model="selectedRooms" handle=".handle"  :itemKey="'name'" animation="200" class="drag-container flex flex-col gap-4 move-rooms">
+           <template #item="{element: item}">
+            <div class="handle ">
+             
+              <RoomDetails
+                :room="item"
+                @update:type="val => console.log('Type selected for', item.name, val)"
+                @update:gstValue="val => console.log('GST value for', item.name, val)"
+                @remove-room="confirmRemoveRoom"
+              />
+             
+            </div>
+           </template>
+          </draggable>
+           </UPageList>
         </template>
 
         <template v-else>
@@ -222,6 +246,11 @@ const showModal = ref(false)
             Select a room to view details
           </p>
         </template>
+
+
+
+    
+
       </div>
 
     </div>
@@ -237,3 +266,9 @@ const showModal = ref(false)
     />
   </UContainer>
 </template>
+<style scoped>
+.move-rooms {
+ cursor: move;
+}
+
+</style>
