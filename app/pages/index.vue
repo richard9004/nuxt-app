@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import RoomModal from '~/components/RoomModal.vue'
+import MiscellaneousItemsAdd from '~/components/MiscellaneousItemsAdd.vue'
+import MiscellaneousItemList from '~/components/MiscellaneousItemList.vue'
 import Swal from 'sweetalert2'
 import draggable from 'vuedraggable'
 
@@ -264,6 +266,17 @@ const showModal = ref(false)
       :editRoomData="editRoomData"
      
     />
+
+    
+    <div class="flex flex-col md:flex-row gap-6">
+      <div class="flex-1">
+        <MiscellaneousItemsAdd />
+      </div>
+
+      <div class="flex-1">
+        <MiscellaneousItemList />
+      </div>
+    </div>
   </UContainer>
 </template>
 <style scoped>
