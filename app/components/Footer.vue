@@ -17,7 +17,7 @@
           icon="i-simple-icons-discord"
           color="neutral"
           variant="ghost"
-          to="https://go.nuxt.com/discord"
+          to=""
           target="_blank"
           aria-label="Discord"
         />
@@ -25,7 +25,7 @@
           icon="i-simple-icons-x"
           color="neutral"
           variant="ghost"
-          to="https://go.nuxt.com/x"
+          to=""
           target="_blank"
           aria-label="X"
         />
@@ -33,7 +33,7 @@
           icon="i-simple-icons-github"
           color="neutral"
           variant="ghost"
-          to="https://github.com/nuxt/nuxt"
+          to=""
           target="_blank"
           aria-label="GitHub"
         />
@@ -49,17 +49,17 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 const items: NavigationMenuItem[] = [
   {
     label: 'Figma Kit',
-    to: 'https://go.nuxt.com/figma-ui',
+    to: '',
     target: '_blank'
   },
   {
     label: 'Playground',
-    to: 'https://stackblitz.com/edit/nuxt-ui',
+    to: '',
     target: '_blank'
   },
   {
     label: 'Releases',
-    to: 'https://github.com/nuxt/ui/releases',
+    to: '',
     target: '_blank'
   }
 ]

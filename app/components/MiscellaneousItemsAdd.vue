@@ -31,11 +31,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+const emit = defineEmits(['add-item'])
+
 const item = ref({ name: '', price: null })
 
 const addItem = () => {
   if (!item.value.name || !item.value.price) return
-  console.log('Item added:', item.value)
+  emit('add-item', { ...item.value }) // <-- send data to parent
   item.value = { name: '', price: null }
 }
 </script>

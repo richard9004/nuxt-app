@@ -141,21 +141,31 @@ const confirmRemoveRoom = (room) => {
 
 
 const showModal = ref(false)
+
+
+
+const items = ref([])
+
+const addToList = (item) => {
+  items.value.push(item)
+}
+
+const removeFromList = (index) => {
+  items.value.splice(index, 1)
+}
 </script>
 
     <template>
   <UContainer as="section" class="py-8">
-
+ <div class="mb-6 text-center md:text-left">
+    <h2 class="text-2xl font-semibold">Manage Rooms</h2>
+    <p class="text-gray-600 text-sm max-w-2xl">
+      Add, edit, or select rooms and manage their details below.
+    </p>
+  </div>
     <div class="flex flex-col md:flex-row gap-6">
       <div class="flex-1">
-        <!-- Header for Room Grid -->
-        <div class="mb-6 text-center md:text-left">
-          <h3 class="text-xl font-semibold mb-1">Room Grid</h3>
-          <p class="text-gray-600 text-sm max-w-2xl">
-            Add, edit, or remove your rooms below.
-          </p>
-        </div>
-
+       
         <!-- Room Cards -->
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
           <UCard
@@ -216,13 +226,7 @@ const showModal = ref(false)
 
       
       <div class="flex-1">
-        <!-- Header for Details Panel -->
-        <div class="mb-6 text-center md:text-left">
-          <h3 class="text-xl font-semibold mb-1">Room Details</h3>
-          <p class="text-gray-600 text-sm max-w-2xl">
-            Select a room from the grid to view or modify its details.
-          </p>
-        </div>
+      
 
         <template v-if="selectedRooms.length">
            <UPageList class="space-y-4">
@@ -244,15 +248,10 @@ const showModal = ref(false)
         </template>
 
         <template v-else>
-          <p class="text-gray-500 text-center mt-4">
+          <p class="text-gray-500 text-sm">
             Select a room to view details
           </p>
         </template>
-
-
-
-    
-
       </div>
 
     </div>
@@ -268,15 +267,26 @@ const showModal = ref(false)
     />
 
     
+     <div>
+    <!-- Section Title (Not a Card) -->
+    <h2 class="text-lg font-semibold mt-6">Miscellaneous Items</h2>
+<p class="text-sm text-gray-500 mb-4">
+  Add additional charges like service, extra cleaning, food, etc.
+</p>
+    <!-- Cards Layout -->
     <div class="flex flex-col md:flex-row gap-6">
       <div class="flex-1">
-        <MiscellaneousItemsAdd />
+        <MiscellaneousItemsAdd @add-item="addToList" />
       </div>
 
       <div class="flex-1">
-        <MiscellaneousItemList />
+        <MiscellaneousItemList
+          :items="items"
+          @remove-item="removeFromList"
+        />
       </div>
     </div>
+  </div>
   </UContainer>
 </template>
 <style scoped>

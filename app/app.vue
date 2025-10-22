@@ -30,23 +30,23 @@ const route = useRoute()
 
 const items = computed<NavigationMenuItem[]>(() => [{
   label: 'Docs',
-  to: '/docs/getting-started',
+  to: '',
   icon: 'i-lucide-book-open',
-  active: route.path.startsWith('/docs/getting-started')
+  active: route.path.startsWith('')
 }, {
   label: 'Components',
-  to: '/docs/components',
+  to: '',
   icon: 'i-lucide-box',
-  active: route.path.startsWith('/docs/components')
+  active: route.path.startsWith('')
 }, {
   label: 'Figma',
   icon: 'i-simple-icons-figma',
-  to: 'https://go.nuxt.com/figma-ui',
+  to: '',
   target: '_blank'
 }, {
   label: 'Releases',
   icon: 'i-lucide-rocket',
-  to: 'https://github.com/nuxt/ui/releases',
+  to: '',
   target: '_blank'
 }])
 </script>
