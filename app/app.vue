@@ -40,28 +40,7 @@ const items = computed<NavigationMenuItem[]>(() => [
     to: '/settings',
     icon: 'i-lucide-settings',
     active: route.path.startsWith('/settings'),
-    children: [
-      {
-        label: 'General',
-        // Link directly to the first child page
-        to: '/settings/general',
-        icon: 'i-lucide-user-cog',
-        // Optional: Check if the current route is exactly this path
-        active: route.path === '/settings/general'
-      },
-      {
-        label: 'Billing',
-        to: '/settings/billing',
-        icon: 'i-lucide-credit-card',
-        active: route.path === '/settings/billing'
-      },
-      {
-        label: 'Invoices',
-        to: '/settings/invoices',
-        icon: 'i-lucide-file-text',
-        active: route.path === '/settings/invoices'
-      }
-    ]
+   
   }
 ])
 </script>
