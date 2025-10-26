@@ -22,8 +22,9 @@ const route = useRoute()
 const activeTab =  computed(() => route.path)
 
 const links: NavigationMenuItem[] = [
-  { label: 'General', to: '/settings/general', icon: 'i- lucide-settings' },
-  { label: 'Billing', to: '/settings/billing', icon: 'i-lucide-credit-card' },
-  { label: 'Invoices', to: '/settings/invoices', icon: 'i-lucide-file-text' }
+  
+  { label: 'Billing Settings', to: '/settings/billing', icon: 'i-lucide-credit-card' },
+  { label: 'General Settings', to: '/settings/general', icon: 'i-lucide-settings' },
+  { label: 'Invoices Settings', to: '/settings/invoices', icon: 'i-lucide-file-text' }
 ]
 </script>
