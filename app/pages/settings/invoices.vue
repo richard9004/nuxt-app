@@ -88,6 +88,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import SettingsNavigation from '~/components/SettingsNavigation.vue'
+import CREATE_INVOICE_SETTINGS from '~/graphql/mutations/createInvoiceSettings.gql'
 
 const form = ref({
   company_name: '',
@@ -105,11 +106,35 @@ const form = ref({
   logo:''
 })
 
-function saveSettings() {
-  console.log('Saved Settings:', form.value)
-  // Add API request to save settings
-}
+// Apollo mutation
+const { mutate: createInvoiceSettings, onDone, onError } = useMutation(CREATE_INVOICE_SETTINGS)
 
+function saveSettings() {
+  const input = {
+    propertyName: form.value.company_name,
+    propertySubtitle: form.value.company_tagline,
+    address: `${form.value.company_address_line1} ${form.value.company_address_line2}, ${form.value.company_city}, ${form.value.company_state}`,
+    contactNumber: form.value.company_contact_number,
+    email: form.value.company_email,
+    website: form.value.company_website,
+    gstNumber: form.value.company_gst_number,
+    invoicePrefix: form.value.invoice_prefix,
+    startingInvoiceNumber: Number(form.value.starting_invoice_number),
+    logo: form.value.logo
+  }
+
+  createInvoiceSettings({ input })
+
+  onDone(({ data }) => {
+    console.log('Saved Settings:', data)
+    alert('Invoice Settings saved successfully!')
+  })
+
+  onError((error) => {
+    console.error('Error saving settings:', error)
+    alert('Failed to save settings!')
+  })
+}
 const handleLogoUpload = (event: Event) => {
   const target = event.target as HTMLInputElement
   const file = target.files?.[0]

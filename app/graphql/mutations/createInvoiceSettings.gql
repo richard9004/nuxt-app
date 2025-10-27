@@ -1,0 +1,10 @@
+mutation CreateInvoiceSettings($input: CreateInvoiceSettingsInput!) {
+  createInvoiceSettings(input: $input) {
+    invoiceSettings {
+      id
+      propertyName
+      email
+      contactNumber
+      logo
+    }
+  }
