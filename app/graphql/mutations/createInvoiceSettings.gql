@@ -1,10 +1,14 @@
 mutation CreateInvoiceSettings($input: CreateInvoiceSettingsInput!) {
   createInvoiceSettings(input: $input) {
-    invoiceSettings {
-      id
-      propertyName
-      email
-      contactNumber
-      logo
-    }
+    propertyName
+    propertySubtitle
+    address
+    contactNumber
+    email
+    website
+    gstNumber
+    invoicePrefix
+    startingInvoiceNumber
+    logo
   }
+}
