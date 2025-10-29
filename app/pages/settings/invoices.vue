@@ -87,9 +87,48 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import SettingsNavigation from '~/components/SettingsNavigation.vue'
+import SettingsNavigation from '~/components/SettingsNavigation.vue';
+
+
+
 // Inline GraphQL mutation
-const CREATE_INVOICE_SETTINGS = gql`
+
+
+
+
+const form = ref({
+  company_name: '',
+  company_tagline: '',
+  company_address_line1: '',
+  company_address_line2: '',
+  company_city: '',
+  company_state: '',
+  company_contact_number: '',
+  company_email: '',
+  company_website: '',
+  company_gst_number: '',
+  starting_invoice_number: '',
+  invoice_prefix: '',
+  logo: ''
+})
+
+// Arrow function version
+const saveSettings = async () => {
+  const variables  = {
+    propertyName: form.value.company_name,
+    propertySubtitle: form.value.company_tagline,
+    address: `${form.value.company_address_line1} ${form.value.company_address_line2}, ${form.value.company_city}, ${form.value.company_state}`,
+    contactNumber: form.value.company_contact_number,
+    email: form.value.company_email,
+    website: form.value.company_website,
+    gstNumber: form.value.company_gst_number,
+    invoicePrefix: form.value.invoice_prefix,
+    startingInvoiceNumber: Number(form.value.starting_invoice_number),
+    logo: form.value.logo
+  }
+  console.log('SAVE');
+  console.log(variables);
+  const query = gql`
   mutation CreateInvoiceSettings($input: CreateInvoiceSettingsInput!) {
     createInvoiceSettings(input: $input) {
       invoiceSettings {
@@ -110,50 +149,17 @@ const CREATE_INVOICE_SETTINGS = gql`
   }
 `
 
-const { mutate } = useMutation(CREATE_INVOICE_SETTINGS)
+  const { mutate } = useMutation(query, { variables })
 
-
-const form = ref({
-  company_name: '',
-  company_tagline: '',
-  company_address_line1: '',
-  company_address_line2: '',
-  company_city: '',
-  company_state: '',
-  company_contact_number: '',
-  company_email: '',
-  company_website: '',
-  company_gst_number: '',
-  starting_invoice_number:'',
-  invoice_prefix:'',
-  logo:''
-})
-
-
-
-async function saveSettings() {
-  const input = {
-    propertyName: form.value.company_name,
-    propertySubtitle: form.value.company_tagline,
-    address: `${form.value.company_address_line1} ${form.value.company_address_line2}, ${form.value.company_city}, ${form.value.company_state}`,
-    contactNumber: form.value.company_contact_number,
-    email: form.value.company_email,
-    website: form.value.company_website,
-    gstNumber: form.value.company_gst_number,
-    invoicePrefix: form.value.invoice_prefix,
-    startingInvoiceNumber: Number(form.value.starting_invoice_number),
-    logo: form.value.logo
-  }
-
-  try {
-  const { data } = await mutate({ variables: { input } });
-    console.log('Saved Settings:', data.createInvoiceSettings.invoiceSettings)
-    alert('Invoice Settings saved successfully!')
-  } catch (error) {
-    console.error('Error saving settings:', error)
-    alert('Failed to save settings!')
-  }
+  mutate() 
+    .then((result) => {
+        console.log('Mutation successful:', result.data.addUser.id);
+    })
+    .catch((error) => {
+        console.error('Mutation failed:', error);
+    });
 }
+
 const handleLogoUpload = (event: Event) => {
   const target = event.target as HTMLInputElement
   const file = target.files?.[0]

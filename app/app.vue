@@ -26,6 +26,7 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
 import Footer from '~/components/Footer.vue'
 
+
 const route = useRoute()
 
 const items = computed<NavigationMenuItem[]>(() => [
