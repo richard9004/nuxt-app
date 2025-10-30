@@ -114,62 +114,60 @@ const form = ref({
 
 // Arrow function version
 const saveSettings = async () => {
-  const variables  = {
-    propertyName: form.value.company_name,
-    propertySubtitle: form.value.company_tagline,
-    address: `${form.value.company_address_line1} ${form.value.company_address_line2}, ${form.value.company_city}, ${form.value.company_state}`,
-    contactNumber: form.value.company_contact_number,
-    email: form.value.company_email,
-    website: form.value.company_website,
-    gstNumber: form.value.company_gst_number,
-    invoicePrefix: form.value.invoice_prefix,
-    startingInvoiceNumber: Number(form.value.starting_invoice_number),
-    logo: form.value.logo
-  }
-  console.log('SAVE');
-  console.log(variables);
-  const query = gql`
-  mutation CreateInvoiceSettings($input: CreateInvoiceSettingsInput!) {
+ 
+
+  const CREATE_INVOICE = gql`
+  mutation CreateInvoice($input: createInvoiceSettingsInput!) {
     createInvoiceSettings(input: $input) {
       invoiceSettings {
         id
         propertyName
-        propertySubtitle
-        address
-        contactNumber
         email
-        website
-        gstNumber
-        invoicePrefix
-        startingInvoiceNumber
-        logo
+        contactNumber
         createdAt
       }
     }
   }
-`
+`;
 
-  const { mutate } = useMutation(query, { variables })
+    const variables = {
+    input: {
+      propertyName: form.value.company_name,
+      propertySubtitle: form.value.company_tagline,
+      address: `${form.value.company_address_line1} ${form.value.company_address_line2}, ${form.value.company_city}, ${form.value.company_state}`,
+      contactNumber: form.value.company_contact_number,
+      email: form.value.company_email,
+      website: form.value.company_website,
+      gstNumber: form.value.company_gst_number,
+      invoicePrefix: form.value.invoice_prefix,
+      startingInvoiceNumber: Number(form.value.starting_invoice_number),
+      file: form.value.logo, // File object goes here
+    },
+  };
 
-  mutate() 
-    .then((result) => {
-        console.log('Mutation successful:', result.data.addUser.id);
-    })
-    .catch((error) => {
-        console.error('Mutation failed:', error);
-    });
+  const { mutate } = useMutation(CREATE_INVOICE);
+  mutate(variables)
+    .then(result => console.log(result))
+    .catch(error => console.error(error));
+
+
+  // const { mutate } = useMutation(query, { variables })
+
+  // mutate() 
+  //   .then((result) => {
+  //       console.log('Mutation successful:', result.data.addUser.id);
+  //   })
+  //   .catch((error) => {
+  //       console.error('Mutation failed:', error);
+  //   });
 }
 
 const handleLogoUpload = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  const file = target.files?.[0]
+   const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (!file) return;
 
-  if (!file) return
+  form.value.logo = file; // Assign the File object directly
 
-  const reader = new FileReader()
-  reader.onload = () => {
-    form.value.logo = reader.result as string // Base64 image stored here
-  }
-  reader.readAsDataURL(file)
 }
 </script>
